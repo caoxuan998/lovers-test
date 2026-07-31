@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <!-- ====== PWA 配置 ====== -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="description" content="做满分恋人 · 5关15题爱情血条闯关，看你能撑到几段位">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="满分恋人">
+    <link rel="apple-touch-icon" href="icon-192.svg">
+    <link rel="icon" type="image/svg+xml" href="icon-192.svg">
+
+    <title>做满分恋人 · 爱情血条闯关</title>
+
+    <style>
+        /* ============ 设计变量：极简高级 ============ */
+        :root {
+            --bg: #fafaf7;
+            --paper: #ffffff;
+            --ink: #1a1a1a;
+            --ink-soft: #6b6b6b;
+            --ink-faint: #a8a8a8;
+            --accent: #1a1a1a;
+            --accent-soft: #3a3a3a;
+            --accent-bg: #f4f2ec;
+            --line: #e8e6df;
+            --line-strong: #d4d2ca;
+            --gold: #b8956a;
+            --green: #5a7a52;
+            --red: #b06060;
+            --sans: 'Noto Sans SC', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            --serif: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+            --shadow: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 24px rgba(0,0,0,0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { -webkit-text-size-adjust: 100%; }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+            padding: 0 0 60px;
+            line-height: 1.75;
+            -webkit-font-smoothing: antialiased;
+            letter-spacing: 0.02em;
+            padding-top: max(20px, env(safe-area-inset-top));
+        }
+
+        .container { max-width: 520px; margin: 0 auto; padding: 0 28px; }
+
+        /* ============ 通用 ============ */
+        .screen { animation: fadeIn 0.6s cubic-bezier(.22,.61,.36,1); }
+        .hidden { display: none !important; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInFast {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .eyebrow {
+            font-size: 0.7rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            font-weight: 500;
+        }
+
+        .serif { font-family: var(--serif); }
+        .center { text-align: center; }
+
+        /* ============ 首页 ============ */
+        .hero { padding: 56px 0 36px; text-align: center; }
+        .hero .eyebrow { display: block; margin-bottom: 22px; }
+        .hero h1 {
+            font-family: var(--serif);
+            font-size: 2.6rem;
+            font-weight: 600;
+            line-height: 1.15;
+            letter-spacing: 0.08em;
+            margin-bottom: 18px;
+        }
+        .hero .lede {
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+            max-width: 320px;
+            margin: 0 auto;
+            line-height: 1.85;
+        }
+        .hero .divider {
+            width: 32px; height: 1px;
+            background: var(--line-strong);
+            margin: 28px auto;
+        }
+
+        /* 模式选择 */
+        .modes { margin-bottom: 36px; }
+        .mode-card {
+            display: block;
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 2px;
+            padding: 30px 26px;
+            margin-bottom: 14px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(.22,.61,.36,1);
+            text-align: left;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+        }
+        .mode-card::after {
+            content: '→';
+            position: absolute;
+            right: 26px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--ink-faint);
+            font-size: 1.1rem;
+            transition: all 0.4s;
+        }
+        .mode-card:hover, .mode-card:active {
+            border-color: var(--ink);
+            background: var(--ink);
+            color: var(--bg);
+        }
+        .mode-card:hover::after, .mode-card:active::after { color: var(--bg); transform: translateY(-50%) translateX(6px); }
+        .mode-card .mode-num {
+            font-family: var(--serif);
+            font-size: 0.75rem;
+            font-style: italic;
+            opacity: 0.5;
+            margin-bottom: 10px;
+            letter-spacing: 0.1em;
+        }
+        .mode-card .mode-title {
+            font-family: var(--serif);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.06em;
+        }
+        .mode-card .mode-desc {
+            font-size: 0.82rem;
+            opacity: 0.65;
+            line-height: 1.7;
+        }
+
+        /* 店主小建议 */
+        .shopkeeper {
+            background: var(--accent-bg);
+            border-left: 2px solid var(--ink);
+            padding: 24px 26px;
+            margin-bottom: 32px;
+        }
+        .shopkeeper .sk-label {
+            font-size: 0.68rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .shopkeeper .sk-label::before {
+            content: '✦';
+            color: var(--gold);
+        }
+        .shopkeeper .sk-title {
+            font-family: var(--serif);
+            font-size: 1.02rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .shopkeeper .sk-body {
+            font-size: 0.83rem;
+            color: var(--ink-soft);
+            line-height: 1.85;
+        }
+
+        /* 身份选择 */
+        .role-prompt { text-align: center; margin: 48px 0 24px; }
+        .role-prompt .eyebrow { display: block; margin-bottom: 14px; }
+        .role-prompt h2 {
+            font-family: var(--serif);
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+        .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+        .role-btn {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 2px;
+            padding: 32px 16px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        .role-btn:hover { border-color: var(--line-strong); }
+        .role-btn.selected {
+            border-color: var(--ink);
+            background: var(--ink);
+            color: var(--bg);
+        }
+        .role-btn .r-label {
+            font-family: var(--serif);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .role-btn .r-sub {
+            font-size: 0.72rem;
+            opacity: 0.6;
+            letter-spacing: 0.05em;
+        }
+
+        /* 按钮 */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 17px;
+            border: none;
+            border-radius: 2px;
+            font-size: 0.92rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.15em;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: var(--ink);
+            color: var(--bg);
+        }
+        .btn-primary:hover { background: var(--accent-soft); }
+        .btn-primary:disabled { background: var(--line-strong); cursor: not-allowed; }
+        .btn-outline {
+            background: transparent;
+            color: var(--ink);
+            border: 1px solid var(--line-strong);
+        }
+        .btn-outline:hover { border-color: var(--ink); }
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        /* ============ 游戏中：顶部血条 ============ */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(250, 250, 247, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 16px 0 14px;
+            border-bottom: 1px solid var(--line);
+        }
+        .topbar-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
+        .topbar-level {
+            font-size: 0.72rem;
+            letter-spacing: 0.2em;
+            color: var(--ink-soft);
+            font-weight: 500;
+        }
+        .topbar-level b { color: var(--ink); font-weight: 600; }
+        .topbar-hp {
+            font-family: var(--serif);
+            font-size: 0.95rem;
+            color: var(--ink);
+        }
+        .topbar-hp .hp-cur { font-weight: 600; font-size: 1.4rem; }
+        .topbar-hp .hp-max { color: var(--ink-faint); font-size: 0.75rem; }
+        .hp-track {
+            height: 2px;
+            background: var(--line);
+            position: relative;
+            overflow: hidden;
+        }
+        .hp-fill {
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            background: var(--ink);
+            width: 70%;
+            transition: width 0.7s cubic-bezier(.22,.61,.36,1), background 0.4s;
+        }
+        .hp-fill.warn { background: var(--gold); }
+        .hp-fill.danger { background: var(--red); }
+        .hp-fill.over {
+            background: linear-gradient(90deg, var(--gold) 0%, #d4a85a 50%, var(--gold) 100%);
+            box-shadow: 0 0 10px rgba(184,149,106,0.5);
+            animation: hpGlow 2.4s ease-in-out infinite;
+        }
+        @keyframes hpGlow {
+            0%,100% { box-shadow: 0 0 8px rgba(184,149,106,0.4); }
+            50%     { box-shadow: 0 0 16px rgba(184,149,106,0.7); }
+        }
+        .level-progress {
+            display: flex;
+            gap: 4px;
+            margin-top: 14px;
+        }
+        .lp-dot {
+            flex: 1;
+            height: 2px;
+            background: var(--line);
+            transition: background 0.4s;
+        }
+        .lp-dot.done { background: var(--ink); }
+        .lp-dot.active { background: var(--gold); }
+
+        /* ============ 关卡开场 ============ */
+        .lvl-intro {
+            text-align: center;
+            padding: 80px 20px;
+            animation: fadeIn 0.7s ease;
+        }
+        .lvl-intro .li-no {
+            font-family: var(--serif);
+            font-style: italic;
+            font-size: 0.85rem;
+            color: var(--ink-faint);
+            letter-spacing: 0.2em;
+            margin-bottom: 24px;
+        }
+        .lvl-intro .li-line {
+            width: 24px; height: 1px;
+            background: var(--line-strong);
+            margin: 0 auto 28px;
+        }
+        .lvl-intro .li-title {
+            font-family: var(--serif);
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            margin-bottom: 18px;
+        }
+        .lvl-intro .li-desc {
+            font-size: 0.88rem;
+            color: var(--ink-soft);
+            line-height: 1.9;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+
+        /* ============ 题目卡 ============ */
+        .q-wrap { padding-top: 30px; animation: fadeInFast 0.4s ease; }
+        .q-scene {
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+            line-height: 1.9;
+            margin-bottom: 22px;
+            padding-left: 16px;
+            border-left: 2px solid var(--line-strong);
+            font-style: italic;
+        }
+        .q-text {
+            font-family: var(--serif);
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.55;
+            letter-spacing: 0.04em;
+            margin-bottom: 30px;
+        }
+        .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            width: 100%;
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 2px;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+            font-size: 0.92rem;
+            color: var(--ink);
+            text-align: left;
+            line-height: 1.6;
+        }
+        .option:hover:not(:disabled) { border-color: var(--ink); }
+        .option:disabled { cursor: default; }
+        .opt-mark {
+            flex-shrink: 0;
+            font-family: var(--serif);
+            font-style: italic;
+            color: var(--ink-faint);
+            font-size: 0.95rem;
+            width: 18px;
+            transition: color 0.25s;
+        }
+        .opt-text { flex: 1; }
+        .opt-delta {
+            flex-shrink: 0;
+            font-size: 0.78rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s;
+            align-self: center;
+        }
+        .option.correct { border-color: var(--green); background: #f5f8f3; }
+        .option.correct .opt-mark { color: var(--green); }
+        .option.correct .opt-delta { color: var(--green); opacity: 1; }
+        .option.wrong { border-color: var(--red); background: #faf4f4; }
+        .option.wrong .opt-mark { color: var(--red); }
+        .option.wrong .opt-delta { color: var(--red); opacity: 1; }
+
+        /* 三档：教科书 / 还行 / 踩雷 —— 答完后揭示每个选项的水平 */
+        .option.lvl-3 { border-color: var(--green); background: #f5f8f3; }
+        .option.lvl-3 .opt-mark { color: var(--green); font-weight: 600; }
+        .option.lvl-3 .opt-delta { color: var(--green); opacity: 1; }
+        .option.lvl-2 { border-color: var(--gold); background: #faf6ef; }
+        .option.lvl-2 .opt-mark { color: var(--gold); }
+        .option.lvl-2 .opt-delta { color: var(--gold); opacity: 1; }
+        .option.lvl-1 { border-color: var(--red); background: #faf4f4; }
+        .option.lvl-1 .opt-mark { color: var(--red); }
+        .option.lvl-1 .opt-delta { color: var(--red); opacity: 1; }
+        /* 我的选择 —— 加粗内描边，便于在档位色中找到自己 */
+        .option.mine { box-shadow: inset 0 0 0 2px var(--ink); }
+        .option.mine .opt-text { font-weight: 600; }
+
+        /* 反馈 */
+        .feedback {
+            background: var(--accent-bg);
+            padding: 22px 24px;
+            border-left: 2px solid var(--ink);
+            margin-bottom: 24px;
+            display: none;
+            animation: fadeInFast 0.4s ease;
+        }
+        .feedback.show { display: block; }
+        .feedback .fb-tag {
+            font-size: 0.68rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .feedback.good .fb-tag { color: var(--green); }
+        .feedback.bad .fb-tag { color: var(--red); }
+        .feedback .fb-body {
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+            line-height: 1.85;
+        }
+
+        .next-btn {
+            display: none;
+            width: 100%;
+            padding: 16px;
+            background: var(--ink);
+            color: var(--bg);
+            border: none;
+            border-radius: 2px;
+            font-size: 0.9rem;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.3s;
+        }
+        .next-btn.show { display: block; animation: fadeInFast 0.4s ease; }
+        .next-btn:hover { background: var(--accent-soft); }
+
+        /* ============ 结算页 ============ */
+        .result { text-align: center; padding: 60px 0 20px; }
+        .result .r-eyebrow { display: block; margin-bottom: 18px; }
+        .result-rank {
+            font-family: var(--serif);
+            font-size: 3rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+        .result-sub {
+            font-size: 0.88rem;
+            color: var(--ink-soft);
+            margin-bottom: 36px;
+            letter-spacing: 0.05em;
+        }
+        .result-line { width: 32px; height: 1px; background: var(--line-strong); margin: 0 auto 36px; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            margin-bottom: 32px;
+        }
+        .stat-cell {
+            padding: 22px 8px;
+            border-right: 1px solid var(--line);
+        }
+        .stat-cell:last-child { border-right: none; }
+        .stat-num {
+            font-family: var(--serif);
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 0.68rem;
+            color: var(--ink-faint);
+            letter-spacing: 0.15em;
+        }
+
+        .result-msg {
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+            line-height: 1.95;
+            margin-bottom: 32px;
+            text-align: left;
+            padding: 0 6px;
+        }
+
+        .result-actions { display: flex; flex-direction: column; gap: 10px; }
+
+        /* ============ 双人：等待 / 配对 ============ */
+        .pair { text-align: center; padding: 60px 0; }
+        .pair-icon {
+            font-family: var(--serif);
+            font-size: 3rem;
+            margin-bottom: 24px;
+            font-style: italic;
+            color: var(--ink-faint);
+        }
+        .pair h2 {
+            font-family: var(--serif);
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+            letter-spacing: 0.06em;
+        }
+        .pair p {
+            font-size: 0.88rem;
+            color: var(--ink-soft);
+            line-height: 1.9;
+            max-width: 320px;
+            margin: 0 auto 32px;
+        }
+        .share-card {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 2px;
+            padding: 28px 24px;
+            margin-bottom: 20px;
+        }
+        .share-card .sc-label {
+            font-size: 0.68rem;
+            letter-spacing: 0.25em;
+            color: var(--ink-faint);
+            margin-bottom: 14px;
+            text-transform: uppercase;
+        }
+        .share-code {
+            font-family: var(--serif);
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 0.3em;
+            margin-bottom: 18px;
+            color: var(--ink);
+        }
+        .copy-feedback {
+            font-size: 0.78rem;
+            color: var(--green);
+            margin-top: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .copy-feedback.show { opacity: 1; }
+
+        /* 默契度详情 */
+        .match-detail {
+            text-align: left;
+            margin-bottom: 28px;
+        }
+        .match-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 0.82rem;
+        }
+        .match-item:last-child { border-bottom: none; }
+        .match-icon { flex-shrink:0; width: 22px; text-align: center; font-weight: 600; }
+        .match-icon.yes { color: var(--green); }
+        .match-icon.no { color: var(--ink-faint); }
+        .match-text { flex: 1; color: var(--ink-soft); line-height: 1.6; }
+        .match-pick { font-family: var(--serif); color: var(--ink); font-weight: 600; }
+
+        /* 底部 */
+        .foot {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 28px;
+            border-top: 1px solid var(--line);
+        }
+        .foot p {
+            font-size: 0.72rem;
+            color: var(--ink-faint);
+            line-height: 1.9;
+            letter-spacing: 0.05em;
+        }
+
+        /* 段位配色 */
+        .rank-king { color: var(--gold); }
+        .rank-gold { color: #8a6a3a; }
+        .rank-silver { color: var(--ink-soft); }
+        .rank-bronze { color: #9a7050; }
+        .rank-fail { color: var(--red); }
+
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .shake { animation: shake 0.35s ease; }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ============ 首页 ============ -->
+        <div id="screen-home" class="screen">
+            <div class="hero">
+                <span class="eyebrow">A Lovers' Quest · 2026</span>
+                <h1>做满分恋人</h1>
+                <div class="divider"></div>
+                <p class="lede">五道关卡，二十个真实情境。<br>用十分钟，看见爱情里那些<br>容易被忽略的细节。</p>
+            </div>
+
+            <div class="modes">
+                <div class="mode-card" onclick="goMode('solo')">
+                    <div class="mode-num">Mode 01</div>
+                    <div class="mode-title">单人闯关</div>
+                    <div class="mode-desc">爱情血条挑战 · 看你能撑到几段位</div>
+                </div>
+                <div class="mode-card" onclick="goMode('duo')">
+                    <div class="mode-num">Mode 02</div>
+                    <div class="mode-title">双人默契</div>
+                    <div class="mode-desc">和 TA 各答五题 · 测你们有多懂彼此</div>
+                </div>
+            </div>
+
+            <div class="shopkeeper">
+                <div class="sk-label">店主小建议</div>
+                <div class="sk-title">玩之前，先说三句心里话</div>
+                <div class="sk-body">这不是一场考试，没有绝对的标准答案。每道题更像一面镜子——照见我们平时没说出口的想法。建议拉上 TA 一起玩，结果不重要，重要的是玩完之后，你们愿意坐下来聊一聊。真正的满分，从来不是答出来的，是两个人一起过出来的。</div>
+            </div>
+
+            <div class="foot">
+                <p>可添加至桌面，像 App 一样随时开玩<br>· 本作品仅供娱乐与启发 ·</p>
+            </div>
+        </div>
+
+        <!-- ============ 身份选择（单人） ============ -->
+        <div id="screen-role" class="screen hidden">
+            <div class="role-prompt">
+                <span class="eyebrow">Solo Mode</span>
+                <h2>选择你的身份</h2>
+            </div>
+            <div class="role-grid">
+                <button class="role-btn" data-role="boy" onclick="pickRole('boy')">
+                    <div class="r-label">男生</div>
+                    <div class="r-sub">学做满分男友</div>
+                </button>
+                <button class="role-btn" data-role="girl" onclick="pickRole('girl')">
+                    <div class="r-label">女生</div>
+                    <div class="r-sub">学做满分女友</div>
+                </button>
+            </div>
+            <button class="btn btn-outline" onclick="showScreen('home')">← 返回</button>
+        </div>
+
+        <!-- ============ 游戏中 ============ -->
+        <div id="screen-game" class="screen hidden">
+            <div class="topbar">
+                <div class="topbar-row">
+                    <div class="topbar-level">关卡 <b id="tbLvNo">01</b> / 05 · <span id="tbLvName">日常相处</span></div>
+                    <div class="topbar-hp"><span class="hp-cur" id="tbHp">70</span><span class="hp-max"> / 100</span></div>
+                </div>
+                <div class="hp-track"><div class="hp-fill" id="hpFill"></div></div>
+                <div class="level-progress" id="lvProgress"></div>
+            </div>
+
+            <div id="lvlIntro" class="lvl-intro hidden">
+                <div class="li-no" id="liNo">Chapter I</div>
+                <div class="li-line"></div>
+                <div class="li-title" id="liTitle">日常相处</div>
+                <div class="li-desc" id="liDesc"></div>
+            </div>
+
+            <div id="qWrap" class="q-wrap">
+                <div class="q-scene" id="qScene"></div>
+                <div class="q-text" id="qText"></div>
+                <div class="options" id="options"></div>
+                <div class="feedback" id="feedback">
+                    <div class="fb-tag" id="fbTag"></div>
+                    <div class="fb-body" id="fbBody"></div>
+                </div>
+                <button class="next-btn" id="nextBtn" onclick="nextQuestion()">继续 →</button>
+            </div>
+        </div>
+
+        <!-- ============ 单人结算 ============ -->
+        <div id="screen-result" class="screen hidden">
+            <div class="result">
+                <span class="eyebrow r-eyebrow" id="rEyebrow">Your Rank</span>
+                <div class="result-rank" id="rRank">王者CP</div>
+                <div class="result-sub" id="rSub">神仙眷侣</div>
+                <div class="result-line"></div>
+
+                <div class="stats-grid">
+                    <div class="stat-cell"><div class="stat-num" id="sHp">100</div><div class="stat-label">爱情值</div></div>
+                    <div class="stat-cell"><div class="stat-num" id="sRight">15</div><div class="stat-label">答对</div></div>
+                    <div class="stat-cell"><div class="stat-num" id="sAcc">100%</div><div class="stat-label">正确率</div></div>
+                </div>
+
+                <div class="result-msg" id="rMsg"></div>
+
+                <div class="shopkeeper" style="margin-bottom:28px;">
+                    <div class="sk-label">店主小建议</div>
+                    <div class="sk-body" id="rShopkeeper"></div>
+                </div>
+
+                <div class="result-actions">
+                    <button class="btn btn-primary" onclick="restartSolo()">再来一次</button>
+                    <div class="btn-row">
+                        <button class="btn btn-outline" onclick="goMode('duo')">邀请 TA 双人</button>
+                        <button class="btn btn-outline" onclick="showScreen('home')">返回首页</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ 双人：我的回合 ============ -->
+        <div id="screen-duo-intro" class="screen hidden">
+            <div class="pair">
+                <div class="pair-icon">II</div>
+                <span class="eyebrow" style="display:block;margin-bottom:18px;">Duo Mode</span>
+                <h2>双人默契</h2>
+                <p>你和 TA 将分别独立作答 <b>5 道题</b>。系统会对比你们的答案，算出「默契度」。答题时请凭第一直觉——这才是真实的你们。</p>
+                <button class="btn btn-primary" onclick="startDuo()" style="max-width:280px;margin:0 auto;">开始我的回合</button>
+                <button class="btn btn-outline" onclick="showScreen('home')" style="max-width:280px;margin:10px auto 0;">← 返回</button>
+                <div class="shopkeeper" style="text-align:left;margin-top:36px;">
+                    <div class="sk-label">店主小建议</div>
+                    <div class="sk-body">默契度高低，从不是用来比较「谁更爱谁」。它只是一个温柔的提醒：原来我们在这些事上，想得不太一样。玩完之后，挑一个你们答案不同的题，认真聊聊吧。</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ 双人：答题（复用结构） ============ -->
+        <div id="screen-duo-game" class="screen hidden">
+            <div class="topbar">
+                <div class="topbar-row">
+                    <div class="topbar-level">默契测试 · <b id="dLvNo">01</b> / 05</div>
+                    <div class="topbar-level" id="dRole">你的回合</div>
+                </div>
+                <div class="level-progress" id="dProgress"></div>
+            </div>
+            <div class="q-wrap">
+                <div class="q-scene" id="dScene"></div>
+                <div class="q-text" id="dText"></div>
+                <div class="options" id="dOptions"></div>
+                <button class="next-btn" id="dNextBtn" onclick="nextDuo()">继续 →</button>
+            </div>
+        </div>
+
+        <!-- ============ 双人：分享等待 ============ -->
+        <div id="screen-duo-share" class="screen hidden">
+            <div class="pair">
+                <div class="pair-icon">✦</div>
+                <span class="eyebrow" style="display:block;margin-bottom:18px;">Your Turn Is Done</span>
+                <h2>轮到 TA 了</h2>
+                <p>把下面这个链接发给 TA（微信直接发即可）。TA 答完后，<b>你们俩都能看到默契度结果</b>。</p>
+
+                <div class="share-card">
+                    <div class="sc-label">你的专属链接</div>
+                    <div class="share-code" id="shareCode" style="font-size:0.82rem;letter-spacing:0.02em;word-break:break-all;font-family:var(--sans);">...</div>
+                    <button class="btn btn-primary" onclick="copyShareLink()" style="margin-top:8px;">复制链接</button>
+                    <div class="copy-feedback" id="copyFb">✓ 已复制，去微信粘贴给 TA 吧</div>
+                </div>
+
+                <div class="shopkeeper" style="text-align:left;">
+                    <div class="sk-label">店主小建议</div>
+                    <div class="sk-body">分享时可以附一句话：「我们一起玩个默契小测试吧，看我们有多懂彼此～」这样 TA 会更愿意认真作答。结果出来后，记得多夸夸一致的地方，少计较不同的地方。</div>
+                </div>
+
+                <button class="btn btn-outline" onclick="showScreen('home')" style="margin-top:20px;">返回首页</button>
+            </div>
+        </div>
+
+        <!-- ============ 双人：默契结果 ============ -->
+        <div id="screen-duo-result" class="screen hidden">
+            <div class="result">
+                <span class="eyebrow r-eyebrow">Compatibility</span>
+                <div class="result-rank" id="mRank">默契 80%</div>
+                <div class="result-sub" id="mSub">心有灵犀</div>
+                <div class="result-line"></div>
+
+                <div class="stats-grid">
+                    <div class="stat-cell"><div class="stat-num" id="mMatch">4</div><div class="stat-label">默契题数</div></div>
+                    <div class="stat-cell"><div class="stat-num" id="mTotal">5</div><div class="stat-label">总题数</div></div>
+                    <div class="stat-cell"><div class="stat-num" id="mPct">80%</div><div class="stat-label">默契度</div></div>
+                </div>
+
+                <div class="match-detail" id="matchDetail"></div>
+
+                <div class="result-msg" id="mMsg"></div>
+
+                <div class="shopkeeper" style="margin-bottom:28px;">
+                    <div class="sk-label">店主小建议</div>
+                    <div class="sk-body" id="mShopkeeper"></div>
+                </div>
+
+                <div class="result-actions">
+                    <button class="btn btn-primary" onclick="restartDuo()">再测一次</button>
+                    <button class="btn btn-outline" onclick="showScreen('home')">返回首页</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        /* ===================================================================
+           题库数据
+           单人：boy / girl 各 5 关 × 3 题；delta = 答对的爱情值变化
+           双人：5 道中性题，无对错，只看双方选择是否一致
+        =================================================================== */
+        const SOLO = {
+            boy: [
+                { name:'日常相处', desc:'柴米油盐里藏着爱，细节才是真功夫。', questions:[
+                    { scene:'她下班回家一脸疲惫，瘫在沙发上嘟囔了一句"今天好累"，而你这把游戏正打到关键时刻。',
+                      q:'此刻你会怎么办？',
+                      options:[
+                        {text:'"等我打完这把，马上过来陪你！"——心里盘算着再过两分钟就去', correct:2, delta:3,
+                         explain:'你心里是愿意去陪她的，问题是——「马上」两个字往往是一句空头支票。她现在就需要你，你却给了她一个"等一会儿"。承诺在一点点透支。'},
+                        {text:'"我也累啊，今天加班到七点，先让我缓缓"', correct:1, delta:-6,
+                         explain:'比较谁更累，是疲惫时最常见也最伤人的反应。你在说"我也很累"，她听到的是"你不许脆弱"。'},
+                        {text:'放下手柄走过去，给她揉揉肩："今天怎么了？是工作还是别的？"', correct:3, delta:12,
+                         explain:'满分操作。你放下了手头的事，更关键的是——你没有泛泛地说"辛苦了"，而是把关心落在「具体问题」上，让她愿意打开话匣子。'},
+                        {text:'"累了就早点睡吧"，然后继续盯着屏幕，偶尔瞥她一眼', correct:1, delta:-4,
+                         explain:'看似是关心，但本质上你让她独自面对情绪。冷淡的「建议」比漠视更伤——它意味着你看见了，却选择不管。'},
+                        {text:'先把这把打完，再热一杯牛奶端过去说"今天辛苦啦"', correct:2, delta:4,
+                         explain:'暖心的选项。你做了一件具体的小事，可你心里清楚——她哭的时候，你不在身边。这杯牛奶有爱，但少了「同步」。'}
+                      ]},
+                    { scene:'她突然问出经典送命题："我和你妈同时掉水里，你先救谁？"',
+                      q:'你会怎么回答？',
+                      options:[
+                        {text:'"当然先救你啊"（脱口而出的标准答案）', correct:1, delta:-2,
+                         explain:'标准答案太像考试答案，她一听就知道是敷衍。真诚不是讲对的话，是讲真的话。'},
+                        {text:'"谁离得近就先救谁，先上岸再说"——理性分析', correct:2, delta:2,
+                         explain:'你想用逻辑化解尴尬，可她问的不是物理题，是想确认「你心里到底最在乎谁」。'},
+                        {text:'笑着说："我妈会游泳，她负责救你，我负责在岸上给两位鼓掌"', correct:3, delta:11,
+                         explain:'教科书级别。幽默化解了尴尬，又暗藏了"我既护我妈、又宠你"的双重偏爱。但要小心——幽默过头会被当成油嘴滑舌。'},
+                        {text:'"这种无聊问题有什么好问的"——皱眉反问', correct:1, delta:-10,
+                         explain:'她问的不是答案，是"你愿不愿意配合我撒个娇"。一句"无聊"，直接把氛围冰封。'},
+                        {text:'认真地看着她："我会拼命救你们俩，一个都不放弃。但我希望你永远不会掉进去——别让我做这道选择题。"', correct:3, delta:13,
+                         explain:'真诚得有些"硬核"。这道题没有完美答案，但你让她看到你不是用套路敷衍，而是真的在思考这件事。满分。'}
+                      ]},
+                    { scene:'逛商场时，她兴冲冲试了件衣服，转过来问你"好看吗？"。',
+                      q:'你的反应是？',
+                      options:[
+                        {text:'头都不抬："都好看都好看，你穿什么都好看"', correct:2, delta:1,
+                         explain:'她要的是「被认真对待」，不是「被敷衍夸赞」。你说得太多，反而像是在抢答。'},
+                        {text:'认真端详后说："这件颜色衬你，不过刚才那件更显腰身，你试试搭条腰带？"', correct:3, delta:11,
+                         explain:'满分操作。具体的反馈 + 给出建议，让她觉得你眼里有她，也愿意为这一站花时间。'},
+                        {text:'瞥一眼吊牌："有点贵，咱们再逛逛？"', correct:1, delta:-9,
+                         explain:'她正兴致勃勃，你却把她拉回现实。哪怕真觉得贵，也该先肯定眼光，再商量价格。'},
+                        {text:'"挺好的，你自己决定就行"——给出中立答案', correct:1, delta:-3,
+                         explain:'中立答案本质上就是逃避。她想跟你一起做决定，你却把决定权扔回给她。'},
+                        {text:'"我觉得这件还行，但主要看你喜不喜欢"——把球抛回去', correct:2, delta:2,
+                         explain:'你尊重了她的选择，但少了一点「陪她一起逛」的热情。她要的是你和她站在一起，不是一个旁观者。'}
+                      ]},
+                    { scene:'你在咖啡店写方案，她突然给你发来一段语音："我今天超不顺，刚跟老板吵了一架。"',
+                      q:'你听到后的第一反应是？',
+                      options:[
+                        {text:'"又跟老板吵架了？你这脾气得改改"——讲道理', correct:1, delta:-9,
+                         explain:'她现在要的是"被站队"，不是被分析。先评价她的脾气，等于在伤口上撒盐。'},
+                        {text:'放下手头的工作，认真听她说完，再问一句"那你现在心情好点了吗？"', correct:3, delta:13,
+                         explain:'教科书。你放下手中的事 = 你把她的优先级排得比工作高。问完心情 = 你最关心她的状态，不只是事件本身。'},
+                        {text:'"我在忙，晚点再聊"——直接挂掉语音', correct:1, delta:-11,
+                         explain:'她鼓起勇气发了一段长语音，你一句"晚点"会让她觉得你根本不在乎。这一刻最伤人的不是忙，是被略过。'},
+                        {text:'"你今天吃了什么好吃的没？"——故意岔开话题', correct:2, delta:2,
+                         explain:'你的本意是让她开心，但这种"跳过"会被敏感的她读成"你不想面对"。她此刻需要的是被听见，不是被化解。'},
+                        {text:'"行行行你没错，都是老板的问题"——敷衍站队', correct:1, delta:-4,
+                         explain:'你站队了，但没听她说完。她会从敷衍的回应里，感受到你根本不在意她经历了什么。'}
+                      ]}
+                ]},
+                { name:'浪漫惊喜', desc:'仪式感是爱情的保鲜剂，用心比花钱重要。', questions:[
+                    { scene:'你们的恋爱纪念日还有一周到了。她没提，你心里有点虚。',
+                      q:'你会怎么准备？',
+                      options:[
+                        {text:'当天发个红包，备注"随便买"，图个方便', correct:1, delta:-8,
+                         explain:'红包不是不行——但只有红包，会让她觉得你在用钱打发感情。纪念日的核心是"她被在乎"。'},
+                        {text:'等她自己开口问"今天什么日子"，然后才开始想', correct:1, delta:-9,
+                         explain:'被动型恋人的典型。等她问意味着"我不记得，但也愿意承认"。你会错失提前策划的机会。'},
+                        {text:'悄悄翻她收藏夹，准备一份小礼物 + 手写信，约她去第一次约会的地方', correct:3, delta:14,
+                         explain:'教科书操作。「提前准备」+「手写信」+「回到起点」三件套，用心程度直接拉满。'},
+                        {text:'"都老夫老妻了，过什么纪念日"——说出这句话', correct:1, delta:-13,
+                         explain:'再熟悉的关系，也需要被认真对待。这句话的潜台词是"你在我心里已经不算特别了"，杀伤力极大。'},
+                        {text:'提前一周开始策划，定了一家她提过想去的餐厅，准备了一束花', correct:2, delta:7,
+                         explain:'你做了功课，但有些"程序化"。餐厅+花是标准答案，少了一点"只有你才会为她做"的独特心思。'}
+                      ]},
+                    { scene:'她换好衣服，在镜子前嘟囔了一句"我最近是不是胖了……"',
+                      q:'你怎么回应？',
+                      options:[
+                        {text:'"确实有点，该控制一下了"——如实回答', correct:1, delta:-13,
+                         explain:'这是送命题的最高级别！她不是问体重，是问"你还觉得我好看吗"。你的"诚实"把她推到了尴尬。'},
+                        {text:'"哪有，我就喜欢你这样的，软软的刚刚好"——走过去从背后抱住她', correct:3, delta:12,
+                         explain:'教科书。笃定的偏爱 + 一个具体的拥抱，给了她确定的答案。'},
+                        {text:'"还好吧"——敷衍式回应，然后低头看手机', correct:1, delta:-7,
+                         explain:'冷淡的回应比说错话更伤。她在试探你的态度，你的敷衍就是一盆冷水。'},
+                        {text:'"你胖不胖我心里没数吗？走，陪你吃好吃的去"——调侃式化解', correct:2, delta:5,
+                         explain:'你用幽默转移了话题，让她暂时放下了纠结。但深层的焦虑你还没真正回应。'},
+                        {text:'认真端详后说："我觉得你最近气色很好，但不管胖瘦，我爱的是你这个人啊"', correct:2, delta:4,
+                         explain:'你态度是对的，但「爱的是你这个人」听多了会显得有点官话。她想听的是当下这一刻的赞美。'}
+                      ]},
+                    { scene:'逛街时她在一个毛绒玩偶前多看了两眼，说"好可爱啊"，但没买。',
+                      q:'事后你会？',
+                      options:[
+                        {text:'左耳进右耳出，转身就忘', correct:1, delta:-6,
+                         explain:'她随口说的话，是心里的愿望清单。漏掉的不只是玩偶，是她期待被关注的小心思。'},
+                        {text:'偷偷记下款式，过几天买来，在她难过的某天变出来', correct:3, delta:14,
+                         explain:'把随口的话变成惊喜，是顶级浪漫。她会记住这个画面很多年——这叫"原来你都记得"。'},
+                        {text:'当场就买下："喜欢就买呗，又不贵"——痛快出手', correct:2, delta:3,
+                         explain:'你给了她想要的，但少了"偷偷给惊喜"的仪式感。她要的是「被记在心里」的过程，不只是东西本身。'},
+                        {text:'"想要就拿啊，我帮你付"——补一句', correct:1, delta:-1,
+                         explain:'显得你愿意付出，可语气里少了一点"主动记下她想要什么"的用心。'},
+                        {text:'回家后网购一只同款寄给她，给她一个惊喜', correct:2, delta:6,
+                         explain:'你做了惊喜，但没选在她最难过的时刻给。同样的礼物，时机不同，效果差很多。'}
+                      ]},
+                    { scene:'她这次生日恰好赶上你公司赶一个重要项目，已经连着加班一周了。',
+                      q:'你会怎么平衡？',
+                      options:[
+                        {text:'"加班太忙了，今年生日就发个红包吧"——直接放弃仪式', correct:1, delta:-12,
+                         explain:'仪式感不是奢侈品，是感情的呼吸机。她可以理解你忙，但"放弃"两个字会让她觉得你不把她当回事。'},
+                        {text:'提前一天完成手头工作，第二天陪她一整天', correct:3, delta:14,
+                         explain:'教科书。你主动调优先级 = 她在你的人生排序里靠前。提前一天完成工作 = 你没让她等待，仪式完整。'},
+                        {text:'"周末补给你啊"——口头承诺往后拖', correct:1, delta:-9,
+                         explain:'生日是「那天」的仪式，拖到周末就变了味道。"补"会让她觉得自己是次要的，可以被打折。'},
+                        {text:'让跑腿送一束花到她公司 + 一张手写卡', correct:2, delta:6,
+                         explain:'你尽了心，但她最想要的不是"礼物"，是你。送到公司很贴心，但和她单独过的分量不一样。'},
+                        {text:'提前订好她想去的餐厅，邀请共同好友一起策划惊喜派对', correct:2, delta:8,
+                         explain:'你很努力，但她内敛的话可能更想要二人时光。惊喜派对的尺度要和她性格匹配，不然反而成压力。'}
+                      ]}
+                ]},
+                { name:'吵架危机', desc:'先处理情绪，再处理问题。赢了吵架会输掉她。', questions:[
+                    { scene:'你们因为一件小事吵了起来，越吵越凶，她突然红了眼眶开始掉眼泪。',
+                      q:'此刻你该？',
+                      options:[
+                        {text:'"哭什么哭，有话好好说，讲道理啊"——要求她冷静', correct:1, delta:-13,
+                         explain:'女生在情绪里时，你讲道理等于火上浇油。她现在要的不是逻辑，是「被接住」。'},
+                        {text:'先停战，过去抱住她不说话，等她平静了再温和地聊', correct:3, delta:12,
+                         explain:'教科书。「先处理情绪，再处理问题」——一个拥抱让战争降温，问题反而更好谈。'},
+                        {text:'觉得烦，摔门出去"冷静冷静"', correct:1, delta:-12,
+                         explain:'逃避解决不了问题，还会让她觉得被你抛弃。冷战是最伤感情的吵架方式。'},
+                        {text:'"行行行，是我的错，你别哭了"——敷衍式认错', correct:2, delta:-1,
+                         explain:'你选择了退让，但退让不是认错。她要的不是投降，是你的态度。'},
+                        {text:'冷静几秒后说："我现在有点上头，等我十分钟，咱们心平气和地聊"', correct:2, delta:6,
+                         explain:'你意识到自己需要冷静，并坦诚地告诉她。可你要小心——十分钟对她来说可能很长，她会多想。'}
+                      ]},
+                    { scene:'这次确实是你做错了（比如忘了重要约定、说了伤人的话），被她拆穿。',
+                      q:'正确的善后方式？',
+                      options:[
+                        {text:'死鸭子嘴硬，找各种借口解释："我那天确实太忙了，不是故意……"', correct:1, delta:-11,
+                         explain:'解释≠道歉。她要的是你承认错误，不是解释原因。再多借口都是火上浇油。'},
+                        {text:'真诚地说"对不起，这事是我不对"，并告诉她你打算怎么改', correct:3, delta:12,
+                         explain:'教科书三件套：承认 + 道歉 + 改正方案。真诚 + 具体 = 她愿意原谅你的关键。'},
+                        {text:'"行行行，我错了行了吧"——敷衍认错', correct:1, delta:-9,
+                         explain:'敷衍的道歉比不道歉更伤。她要的是你的态度，不是你的投降。'},
+                        {text:'马上开始自我惩罚："我请你吃饭赔罪，想要什么买什么"', correct:1, delta:-5,
+                         explain:'用物质补偿代替真心道歉，是一种"快速掩埋"。她心里那个伤口还在流血。'},
+                        {text:'诚恳地看着她："这件事我错了。我想跟你聊聊，我下次会怎么做"', correct:2, delta:7,
+                         explain:'你的态度是对的，但少了「立刻认错」的果断。她要你先低头，再听你的计划。'}
+                      ]},
+                    { scene:'吵架时她突然翻起旧账，提起你半年前犯的一个错。',
+                      q:'你怎么应对？',
+                      options:[
+                        {text:'"又来了！这事都过去多久了，能不能翻篇"——直接打断', correct:1, delta:-10,
+                         explain:'翻旧账是因为那个伤口还没愈合。急着翻篇，只会让她觉得你没真正在意过她的痛。'},
+                        {text:'认真听她说完，温和地问："这件事让你一直很难受对吗？我懂了"', correct:3, delta:12,
+                         explain:'教科书。她翻旧账是在索要共情，你先把她的感受接住，旧账反而就翻过去了。'},
+                        {text:'反唇相讥："那你上次不也如何如何……"——互相伤害', correct:1, delta:-13,
+                         explain:'互相伤害只会让裂痕越来越深。感情不是比烂比赛。'},
+                        {text:'"那件事是我的错，但现在扯这些有啥意思"——先认错但敷衍', correct:1, delta:-5,
+                         explain:'你承认了错误，但后半句让她觉得你在堵她的嘴。她话还没说完，你就关上了门。'},
+                        {text:'"既然翻出来了，咱们就当时没解决好，这次好好谈开吧"——一起面对', correct:2, delta:6,
+                         explain:'你愿意面对，但"这次好好谈开"听起来像施压。她需要先被理解，再被"解决"。'}
+                      ]},
+                    { scene:'冷静两天后，她主动发来一条消息："我那天确实有点过，但你这几天都没理我。"',
+                      q:'你看到这条消息后的处理？',
+                      options:[
+                        {text:'"行吧，那件事过去了"——一句带过', correct:2, delta:4,
+                         explain:'你愿意翻篇是好事，但她说"没理我"是核心诉求。一句"过去了"反而像在逃避。'},
+                        {text:'"这几天没联系是我不对，但你先攻击我也有问题"——先纠正她', correct:1, delta:-7,
+                         explain:'她已经给了台阶，你还在纠正 = 不会下台阶。台阶接住之后，问题再慢慢谈。'},
+                        {text:'认真回她："这几天我也在想，那天我先冷下来其实是我不对。"', correct:3, delta:13,
+                         explain:'教科书。她先示弱，你接住 + 主动承认 = 关系直接修复。复盘责任 = 你们在共同成长，不是比输赢。'},
+                        {text:'"那我们就这样吧，都退一步"——草草收尾', correct:1, delta:-3,
+                         explain:'"都退一步"听起来公平，但什么都没说清楚。下次同样的问题还会再吵。'},
+                        {text:'过了一天才回她："我最近忙，没看到消息"——冷处理', correct:1, delta:-10,
+                         explain:'她鼓起勇气主动联系，你一天后还用"忙"敷衍，会让她后悔这次主动。"忙"从来不是借口，是冷暴力。'}
+                      ]}
+                ]},
+                { name:'见家长', desc:'真诚和靠谱，比花言巧语更打动长辈。', questions:[
+                    { scene:'第一次正式登门见她父母，你心里挺紧张。',
+                      q:'你的表现策略是？',
+                      options:[
+                        {text:'紧张到全程低头玩手机缓解尴尬', correct:1, delta:-14,
+                         explain:'玩手机在长辈眼里就是"不懂事、不上心"，第一印象直接归零。'},
+                        {text:'提前问好她父母喜好，主动帮忙干活、得体地陪聊', correct:3, delta:13,
+                         explain:'教科书。眼里有活、嘴上有礼、心里有她，长辈看到的是"靠谱的女婿模样"。'},
+                        {text:'过度表现，吹牛显摆自己的收入、人脉、未来规划', correct:1, delta:-9,
+                         explain:'吹牛显得轻浮不踏实。长辈活了大半辈子，真假一眼看穿，反而减分。'},
+                        {text:'全程礼貌微笑，她说啥就答啥，绝不多嘴', correct:2, delta:3,
+                         explain:'礼貌是基础，但显得有点"应付"。长辈想看到一个有想法、懂相处的小伙子。'},
+                        {text:'带一份贵重的礼物，希望能留下好印象', correct:2, delta:1,
+                         explain:'礼物是心意，可见面核心是「人」。光靠礼物撑场子，一旦聊起来就露馅了。'}
+                      ]},
+                    { scene:'她父母明确表示不太同意你们在一起（嫌距离远、条件不够等）。',
+                      q:'你的态度是？',
+                      options:[
+                        {text:'"这是你家的事，你自己搞定"——把压力甩给她', correct:1, delta:-13,
+                         explain:'这是她最需要你担当的时刻。甩锅会让她寒心，比父母反对更伤人。'},
+                        {text:'和她站在一起，用行动和时间向父母证明你的诚意', correct:3, delta:13,
+                         explain:'教科书。并肩作战，比抱怨管用一万倍。让她看到你的担当，她会更坚定。'},
+                        {text:'直接和她父母起冲突，理论一番', correct:1, delta:-12,
+                         explain:'硬碰硬只会让她夹在中间更难做。长辈要的是被尊重，不是被说服。'},
+                        {text:'"叔叔阿姨，我现在还不够好，但我会一直努力"——恳求式表态', correct:2, delta:4,
+                         explain:'态度诚恳，但有点"低位"。你把自己摆低了，反而强化了他们对你的成见。'},
+                        {text:'默默退出，不想让她夹在中间为难', correct:1, delta:-9,
+                         explain:'看似体贴，实是逃避。她不需要你退出，需要你一起面对——这才是担当。'}
+                      ]},
+                    { scene:'她妈妈热情地夹了一筷子拿手菜给你，但味道实在不太合你口味。',
+                      q:'你的反应？',
+                      options:[
+                        {text:'皱着眉直接说："阿姨，这个有点咸/不太好吃"', correct:1, delta:-13,
+                         explain:'见家长是情商大考。当面否定长辈的心意，等于打女朋友的脸。'},
+                        {text:'礼貌地多吃几口，真诚地夸："阿姨手艺真好，难怪XX总夸您做的饭"', correct:3, delta:12,
+                         explain:'教科书。给长辈面子 = 给女朋友面子。这不是虚伪，是善意和教养。'},
+                        {text:'悄悄推到一边，一口不动——默默接受', correct:1, delta:-11,
+                         explain:'不动筷子同样失礼。长辈的热情落空，女朋友也跟着尴尬。'},
+                        {text:'吃两口，夸一句"不错"，然后默默吃别的菜', correct:2, delta:3,
+                         explain:'你给了面子，但又没完全配合。她妈妈眼里的"勉强"，会被捕捉到。'},
+                        {text:'"阿姨，做菜真厉害！您这道菜是怎么做的呀？"——主动找话题', correct:2, delta:6,
+                         explain:'你把注意力从"好不好吃"转到"阿姨的骄傲"上，是聪明的做法。但要小心——问题太多像在审问。'}
+                      ]},
+                    { scene:'吃完饭她妈妈单独把你叫到阳台，试探地问："你们以后有打算买房吗？"',
+                      q:'你怎么回应？',
+                      options:[
+                        {text:'"这得看我们俩自己的节奏"——模糊带过', correct:1, delta:-7,
+                         explain:'她妈妈问的是「诚意」，不是「答案」。模糊回避在长辈眼里 = 没规划、没担当。'},
+                        {text:'"阿姨，我现在还在努力，三年内我们俩有明确计划，您放心"——给具体承诺', correct:3, delta:13,
+                         explain:'教科书。给时间 + 给方向 = 让她妈妈看到「靠谱」。长辈要的不是你现在有多少钱，是你有没有在想。'},
+                        {text:'"哎哟这问题太现实了，我们先谈恋爱再说"——轻佻带过', correct:1, delta:-11,
+                         explain:'她妈妈把女儿托付给你之前要一个"确定感"。你轻佻回避，她妈妈回去一定跟女儿说"这人不行"。'},
+                        {text:'"这事我妈也得参与，回头我和两边家长一起聊"——把球踢出去', correct:2, delta:3,
+                         explain:'你说要两家一起聊是尊重，但当着女方妈妈的面提"我妈也得参与"，会被听成"我家说了算"。'},
+                        {text:'"我们俩正在看房，已经有初步计划"——具体进展', correct:2, delta:8,
+                         explain:'如果你真在计划，这是高分答案。但如果只是"画饼"，她妈妈会从细节里听出虚的。'}
+                      ]}
+                ]},
+                { name:'未来成长', desc:'你的未来里有没有她，是她最大的安全感。', questions:[
+                    { scene:'夜深了，她靠在你肩上，认真聊起"我们以后会结婚吗"。',
+                      q:'你的回应？',
+                      options:[
+                        {text:'含糊其辞："再说吧，现在不是挺好的嘛"', correct:1, delta:-9,
+                         explain:'回避未来，会让她觉得你没那么想走下去。安全感一点点流失。'},
+                        {text:'认真聊你的规划："当然会，我连以后咱们的家都想过……"', correct:3, delta:13,
+                         explain:'教科书。未来里有她，是她最大的安全感。哪怕计划还在路上，态度要笃定。'},
+                        {text:'"你怎么这么着急，催什么催"——表达反感', correct:1, delta:-12,
+                         explain:'她想聊未来是因为在乎。一句"催"字，把她推到了对立面。'},
+                        {text:'"我会负责的，但结婚的事以后再说"——模糊承诺', correct:1, delta:-4,
+                         explain:'看似给了承诺，但她听到的是"我目前没准备好"。模糊的承诺 = 没有承诺。'},
+                        {text:'抱着她说"我想跟你结婚，但我也想给你一个扎实的未来"', correct:2, delta:7,
+                         explain:'你给了她方向，但"扎实的未来"听起来像是要先拼事业再结婚。她等得起吗？'}
+                      ]},
+                    { scene:'你最近工作有了大突破，升职加薪了，心情很好。',
+                      q:'你会怎么处理这份喜悦？',
+                      options:[
+                        {text:'奖金全花在自己心爱的爱好/装备上——犒劳自己', correct:1, delta:-8,
+                         explain:'好的感情是共享人生。把她排除在你的喜悦之外，她会觉得自己是局外人。'},
+                        {text:'第一时间和她分享，一起规划这笔钱怎么用，并给她准备小惊喜', correct:3, delta:13,
+                         explain:'教科书。共享喜悦和成果，她的参与感和安全感都来自你的分享。'},
+                        {text:'瞒着她，怕她知道后要求变多', correct:1, delta:-9,
+                         explain:'防备和隐瞒会侵蚀信任。你以为的保护，其实是隔阂的开始。'},
+                        {text:'跟她显摆一下："以后我养你！"——画饼', correct:1, delta:-5,
+                         explain:'你很开心，但她可能把"我养你"听成"你以后不用工作"。画饼不是浪漫，是压力。'},
+                        {text:'跟她简单报喜："最近工作有点进展，晚上出去吃顿好的"', correct:2, delta:4,
+                         explain:'你分享了，可"吃饭庆祝"少了一点"属于她的小心思"。惊喜感还不够。'}
+                      ]},
+                    { scene:'最近两人都忙，变成了异地/各自加班，相处时间越来越少。',
+                      q:'你怎么维系？',
+                      options:[
+                        {text:'顺其自然，联系渐渐变少、变淡', correct:1, delta:-13,
+                         explain:'感情不会自动保鲜。冷淡是分手的前奏，别等失去了才后悔。'},
+                        {text:'主动制造联系：固定时间视频、偶尔寄个小惊喜、计划下次见面', correct:3, delta:13,
+                         explain:'教科书。距离不会打败爱情，冷漠才会。主动经营，是对异地最好的交代。'},
+                        {text:'"都这么忙，就少联系吧，省得烦"——说出这句话', correct:1, delta:-11,
+                         explain:'把"忙"当借口，本质是不够上心。她会读出你的敷衍。'},
+                        {text:'每天固定发一条早安/晚安消息，但内容都是复制粘贴', correct:1, delta:-4,
+                         explain:'形式有了，但内容是机器感。她要的是「你在想着她」，不是定时打卡。'},
+                        {text:'计划着"等忙完这一阵再好好陪她"——延迟陪伴', correct:2, delta:2,
+                         explain:'你心里有她，但陪伴不能总"等以后"。她需要的是此刻，不是承诺。'}
+                      ]}
+                ]}
+            ],
+
+            girl: [
+                { name:'日常相处', desc:'给他空间和信任，是男人最想要的温柔。', questions:[
+                    { scene:'他下班回家，话明显比平时少，瘫在沙发上一脸疲惫。',
+                      q:'你的第一反应？',
+                      options:[
+                        {text:'"你怎么不理我？是不是不爱我了？"——紧贴追问', correct:1, delta:-12,
+                         explain:'男人疲惫时需要"洞穴时间"独自回血。逼问只会让他更想躲。'},
+                        {text:'给他空间，倒杯水放旁边："今天辛苦啦，想聊了我随时在"', correct:3, delta:13,
+                         explain:'教科书。体贴不是喋喋不休的关心，而是恰到好处的空间。他回过神，会更感激你。'},
+                        {text:'一直追问"你到底怎么了，说啊"', correct:1, delta:-10,
+                         explain:'越追问，他越封闭。逼出来的话，往往不是真心。'},
+                        {text:'"我也累啊，今天加班到九点"——比较谁更累', correct:1, delta:-8,
+                         explain:'他在向你求救，你却开启了"比赛模式"。他需要的不是比较，是被接住。'},
+                        {text:'默默坐在他旁边刷手机，等他自己开口', correct:2, delta:4,
+                         explain:'你给了空间，但缺乏一个「我在」的信号。一句"我陪你"，比沉默更暖。'}
+                      ]},
+                    { scene:'周末他和几个铁哥们约了聚会，可能玩到比较晚。',
+                      q:'你会怎么做？',
+                      options:[
+                        {text:'每隔半小时一个电话/消息查岗"和谁、在哪、几点回"', correct:1, delta:-13,
+                         explain:'查岗查不住心，只会让他觉得被监视，在朋友面前也抬不起头。'},
+                        {text:'叮嘱一句"注意安全，结束了说一声"，然后享受自己的时间', correct:3, delta:13,
+                         explain:'教科书。信任是感情的地基。你给他自由，他反而更想早点回到你身边。'},
+                        {text:'回来后直接冷战，逼他自己反省', correct:1, delta:-10,
+                         explain:'冷暴力是最无效的沟通。他可能根本不知道你为什么不高兴。'},
+                        {text:'"去吧玩得开心，但我不喜欢你喝太多酒"——撒娇式叮嘱', correct:2, delta:5,
+                         explain:'温柔但有点"管"。你表达了在乎，可男人会把这句话理解成"你不许放飞"。'},
+                        {text:'他说几点回来，你就一直等到几点，什么也不做', correct:1, delta:-3,
+                         explain:'等待本身是爱，但"什么都不做只等他"会让你的生活围着 TA 转，反而失去了自我。'}
+                      ]},
+                    { scene:'周末他在家打游戏/看球赛，投入得两耳不闻窗外事。',
+                      q:'你的态度？',
+                      options:[
+                        {text:'强行关他电脑/拔网线，逼他陪你', correct:1, delta:-13,
+                         explain:'强行打断只会引发对抗。爱好是他的解压方式，不是不爱你的证据。'},
+                        {text:'给他放松时间，自己也找点喜欢的事做，偶尔凑过去一起看', correct:3, delta:12,
+                         explain:'教科书。各有各的爱好，势均力敌的感情最长久。'},
+                        {text:'一脸嫌弃："多大的人了还玩这些"——直接贬低', correct:1, delta:-9,
+                         explain:'贬低他的爱好，就是贬低他的一部分。久而久之他会跟你无话可说。'},
+                        {text:'自己出去找闺蜜玩，不陪他也不沟通', correct:1, delta:-4,
+                         explain:'你给自己留了空间，但少了沟通。他下次可能就主动来陪你，但"赌气式离开"不是长久之计。'},
+                        {text:'默默坐到他旁边刷手机，偶尔瞥一眼他的屏幕', correct:2, delta:3,
+                         explain:'你在陪伴，但少了一点互动感。他看球时你陪着聊两句，比沉默的陪伴更暖。'}
+                      ]},
+                    { scene:'他最近下班越来越晚，你一个人在家吃了好几天的外卖。',
+                      q:'你的处理方式是？',
+                      options:[
+                        {text:'"你怎么老这么晚，是不是不想回家"——质问', correct:1, delta:-12,
+                         explain:'质问他会让他把"忙碌+被怀疑"叠加成一个想逃离的家。先问原因，别先下结论。'},
+                        {text:'"心疼你最近加班，要不周末我给你做饭？"——温柔表达', correct:3, delta:12,
+                         explain:'教科书。你心疼他的辛苦 = 你看见他了；提出周末做饭 = 你在付出，没在指责。'},
+                        {text:'"我也一个人吃饭好无聊，你能不能早点回来"——撒娇抱怨', correct:2, delta:4,
+                         explain:'你的感受是真实的，但"无聊+不能早点回"听起来像要求。撒娇要加上对他辛苦的认可才不刺耳。'},
+                        {text:'默默等他回来，什么也不说', correct:1, delta:-6,
+                         explain:'你以为懂事是体谅，但他未必知道你一个人吃饭的孤独。表达需求不是矫情，是让 TA 知道怎么爱你。'},
+                        {text:'"我最近一个人吃饭有点不开心，但我也知道你忙"——先承认感受再说事实', correct:2, delta:7,
+                         explain:'这是高情商表达。承认感受 + 理解对方 = 既不憋屈也不施压。但如果你能再加一句"我希望你周末能陪我吃饭"会更完整。'}
+                      ]}
+                ]},
+                { name:'浪漫惊喜', desc:'爱情不是攀比赛，双向奔赴才能久。', questions:[
+                    { scene:'你们的纪念日快到了，你在心里期待他的表示。',
+                      q:'你会怎么做？',
+                      options:[
+                        {text:'疯狂暗示他必须送贵的礼物，否则就是不爱', correct:1, delta:-11,
+                         explain:'用礼物价格衡量爱，会让感情变得功利，也会压垮他。'},
+                        {text:'也为他悄悄准备一份心意，让爱双向奔赴', correct:3, delta:13,
+                         explain:'教科书。爱情是双向奔赴，你也在用心，他才更有动力对你好。'},
+                        {text:'拿闺蜜男友的礼物来比较、嫌弃他准备得不够', correct:1, delta:-13,
+                         explain:'攀比是感情毒药。你看到的人家光鲜，背后未必如你想象。'},
+                        {text:'什么都不做，就等他主动', correct:1, delta:-6,
+                         explain:'等着被宠爱是合理的期待，但"完全被动"会让你失望的次数越来越多。'},
+                        {text:'跟他撒娇暗示"我想要什么"，但装作不经意', correct:2, delta:2,
+                         explain:'你表达了期待，可男人通常接不住"假装不经意的暗示"。直说比暗示更有效。'}
+                      ]},
+                    { scene:'他用心准备的礼物，emmm……确实不太合你心意（比如奇怪的色号）。',
+                      q:'你的反应？',
+                      options:[
+                        {text:'当场嫌弃："你怎么买这个？一点品味都没有"', correct:1, delta:-13,
+                         explain:'他在乎你才会笨拙地准备。当面否定，伤的是他那颗想讨好你的心。'},
+                        {text:'欣然收下并感谢他的用心："谢谢宝贝，你挑的这个颜色挺特别的"', correct:3, delta:12,
+                         explain:'教科书。先接住心意，再温柔引导。被肯定的男人，下次更愿意为你花心思。'},
+                        {text:'嘴上说喜欢，转头就挂到二手平台', correct:1, delta:-15,
+                         explain:'当面一套背后一套，一旦被发现，信任彻底崩塌。'},
+                        {text:'收下但表情有点复杂，让他自己琢磨去', correct:1, delta:-5,
+                         explain:'你没说出口，但表情出卖了你。男人对"脸色"特别敏感，他会读成"我嫌弃"。'},
+                        {text:'坦诚告诉他"这个不太适合我，但我们一起去换个我喜欢的？"——共同完成', correct:2, delta:6,
+                         explain:'你表达了真实，但给了 TA 一个台阶。不过——他可能会有点失落，"被退"的感觉并不好。'}
+                      ]},
+                    { scene:'他最近工作压力特别大，回到家情绪明显低落，话也少了。',
+                      q:'你怎么陪伴？',
+                      options:[
+                        {text:'"你怎么这么丧啊，能不能精神点"——要求他振作', correct:1, delta:-11,
+                         explain:'男人也有脆弱的时候。指责只会让他把压力藏得更深。'},
+                        {text:'默默做他爱吃的菜，给他一个拥抱："不管怎样我都在"', correct:3, delta:14,
+                         explain:'教科书。男人也需要被照顾，你的温柔是他最好的充电站。'},
+                        {text:'抱怨他最近冷淡了你、不陪你了——反客为主', correct:1, delta:-9,
+                         explain:'他正焦头烂额，再加一份抱怨只会让他更想逃离。'},
+                        {text:'让他自己冷静，等他准备好再说话', correct:2, delta:5,
+                         explain:'你给了空间，但少了"我在"的信号。男人低谷时，孤独的等待未必是好事。'},
+                        {text:'拉他出去逛街散心，强行转换心情', correct:1, delta:-4,
+                         explain:'你的初衷是好的，但男人正想独处。你拖他出去，反而让他更累。'}
+                      ]}
+                ]},
+                { name:'吵架危机', desc:'得理饶人是格局，赢了吵架会输掉他。', questions:[
+                    { scene:'你们因一件事吵起来，谁都不肯让步，气氛僵到冰点。',
+                      q:'你会怎么选？',
+                      options:[
+                        {text:'冷战到底，必须他先低头认错才罢休', correct:1, delta:-12,
+                         explain:'感情不是比谁先低头。冷战耗的是两个人的爱，最后双输。'},
+                        {text:'情绪平复后主动给个台阶，理性地聊聊彼此的想法', correct:3, delta:13,
+                         explain:'教科书。见好就收、适时给台阶，是高情商。'},
+                        {text:'把事情上升到"你根本就不爱我"的高度', correct:1, delta:-14,
+                         explain:'动不动上升到爱不爱，是最伤人的沟通方式，会让他越来越累。'},
+                        {text:'等他来哄自己，哄不好就一直绷着', correct:1, delta:-7,
+                         explain:'被动冷战比主动冷战更伤，因为对方猜不透你到底想要什么。'},
+                        {text:'给彼此一天时间冷静，第二天再约一次"深入谈"', correct:2, delta:4,
+                         explain:'你给了台阶，但"约时间谈"听起来像开会，少了亲密感。'}
+                      ]},
+                    { scene:'他和一位女同事/女性朋友有正常的工作往来或社交。',
+                      q:'你的态度？',
+                      options:[
+                        {text:'限制他的社交，要求删好友、查手机', correct:1, delta:-14,
+                         explain:'过度占有欲让人窒息。你越想抓紧，他越想挣脱。'},
+                        {text:'给予信任，如果有不舒服，坦诚而平和地告诉他', correct:3, delta:13,
+                         explain:'教科书。信任让他更想对你负责，坦诚表达感受比查岗有效一万倍。'},
+                        {text:'假装不在意，暗地里记仇、日后翻旧账', correct:1, delta:-11,
+                         explain:'压抑的介意会变成定时炸弹。不如当下好好沟通。'},
+                        {text:'"我信任你，但你也要自觉"——口头信任实则警告', correct:1, delta:-6,
+                         explain:'你说了"信任"，可后半句暴露了不信任。男人会感觉被控制。'},
+                        {text:'直接问"她是谁？你们什么关系？"——质问', correct:2, delta:2,
+                         explain:'你表达了在意，但语气像审讯。男人会被你的不安全感吓到。'}
+                      ]},
+                    { scene:'他意识到自己错了，主动低头跟你道歉。',
+                      q:'你会怎么接？',
+                      options:[
+                        {text:'揪住不放，反复惩罚他，让他长记性', correct:1, delta:-13,
+                         explain:'揪住不放会逼走一个愿意低头的人。下次他可能就不愿认错了。'},
+                        {text:'见好就收，给他改正的机会，告诉他你的底线', correct:3, delta:12,
+                         explain:'教科书。得理饶人是格局，你给的台阶会变成他对你的感激。'},
+                        {text:'"道歉有用的话，要警察干嘛"——冷嘲热讽', correct:1, delta:-10,
+                         explain:'嘲讽会消耗他的歉意。把道歉变成新的战场，得不偿失。'},
+                        {text:'"算你识相"——高高在上的原谅', correct:1, delta:-4,
+                         explain:'你原谅了，但姿态让人不舒服。他下次道歉会犹豫，怕又被你"按在地上"。'},
+                        {text:'抱了抱他说"我也有做得不好的地方"——双向反思', correct:2, delta:7,
+                         explain:'你的态度满分，可时机不对——他刚认错，你却抢着道歉，会让他觉得自己被"稀释"了。'}
+                      ]}
+                ]},
+                { name:'见家长', desc:'落落大方、给他面子，就是给未来铺路。', questions:[
+                    { scene:'第一次正式去他家见父母，你想留个好印象。',
+                      q:'你的表现？',
+                      options:[
+                        {text:'全程端着，等他父母伺候，自己不动手', correct:1, delta:-15,
+                         explain:'长辈最怕"不懂事"的媳妇。第一印象差，以后很难翻盘。'},
+                        {text:'得体礼貌，主动帮忙收拾、和长辈愉快地聊天', correct:3, delta:13,
+                         explain:'教科书。落落大方比什么都强，长辈自然喜欢。'},
+                        {text:'当面挑剔他家的条件/装修/饭菜', correct:1, delta:-15,
+                         explain:'当面挑刺是大忌。否定他家，就是否定他，他会很难堪。'},
+                        {text:'保持礼貌但不太说话，让他去活跃气氛', correct:2, delta:3,
+                         explain:'你得体了，但显得有点"高冷"。长辈想看到一个会聊天的儿媳妇。'},
+                        {text:'带一份你精心挑选的礼物', correct:2, delta:5,
+                         explain:'礼物是心意，可见面核心是「人」。光靠礼物撑场子，聊起来就露馅。'}
+                      ]},
+                    { scene:'他父母观念比较传统，对你的职业/穿着/生活方式有些要求。',
+                      q:'你会怎么应对？',
+                      options:[
+                        {text:'当面顶撞、甩脸色，维护自己的"个性"', correct:1, delta:-14,
+                         explain:'当面冲突让他夹在中间难做，也毁了你在他家的形象。'},
+                        {text:'尊重长辈，有不同想法私下和男友温和沟通', correct:3, delta:13,
+                         explain:'教科书。给他面子就是给关系铺路，关起门来商量比硬刚聪明。'},
+                        {text:'把委屈全撒在他身上，怪他不帮你说话', correct:1, delta:-11,
+                         explain:'他是你和公婆之间的桥梁。把他推到对立面，你就孤立无援了。'},
+                        {text:'当面假装同意，背后该咋样就咋样', correct:1, delta:-6,
+                         explain:'短期圆场，但时间一长会暴露。更糟的是，长辈会觉得你"当面一套背后一套"。'},
+                        {text:'笑着回应但不做明确表态——含糊过关', correct:2, delta:2,
+                         explain:'你避免了冲突，可长辈会觉得你"没主见"。模糊不是智慧，是回避。'}
+                      ]},
+                    { scene:'他妈妈比较强势，爱插手你们俩的事（比如催婚、管消费）。',
+                      q:'你会怎么处理？',
+                      options:[
+                        {text:'把气全撒在他身上，让他去"搞定他妈"', correct:1, delta:-12,
+                         explain:'婆媳关系的关键是"他"。把他当出气筒，等于自断外援。'},
+                        {text:'和他统一战线，温和但坚定地守住自己的边界', correct:3, delta:13,
+                         explain:'教科书。夫妻同心，长辈自然慢慢退让。'},
+                        {text:'直接和未来婆婆硬碰硬，正面刚', correct:1, delta:-13,
+                         explain:'硬刚赢了一时，输了未来几十年的关系。柔中带刚才是智慧。'},
+                        {text:'全听未来婆婆的，放弃自己的主张', correct:1, delta:-8,
+                         explain:'你避免了冲突，但失去了自我。长期下来你会憋出大问题。'},
+                        {text:'跟男友抱怨，但不采取任何行动', correct:2, delta:3,
+                         explain:'你在发泄，但没有解决问题。抱怨多了，他会觉得"我妈的事也成了你的事"。'}
+                      ]},
+                    { scene:'他家亲戚私下问你："你们俩到底什么打算啊？打算结婚吗？"',
+                      q:'你会怎么回应？',
+                      options:[
+                        {text:'"这事我得跟我男友商量一下"——把球踢回去', correct:2, delta:4,
+                         explain:'你没说错，但听在亲戚耳朵里像"你做不了主"。注意场合：家庭场合他需要的是被你撑住。'},
+                        {text:'"我们在认真考虑啦，时间到了会告诉大家的"——大方又留余地', correct:3, delta:12,
+                         explain:'教科书。"认真考虑"= 你们在行动；"时间到了告诉大家"= 不被亲戚牵着鼻子走，又给了尊重。'},
+                        {text:'"这种问题您问我们小辈多尴尬啊"——回避', correct:1, delta:-6,
+                         explain:'你的不自在可以理解，但把亲戚推开 = 让男友难做人。他会被亲戚背后说"你女朋友太冷"。'},
+                        {text:'"哎呀还没想那么远呢"——敷衍带笑', correct:1, delta:-9,
+                         explain:'亲戚传话非常快。"还没想那么远"会被他爸妈听到 = 他家人会怀疑你的真心。'},
+                        {text:'"我们计划明年初，但具体还要看两个人的准备"——具体但有分寸', correct:2, delta:7,
+                         explain:'你给了具体时间，他爸妈会安心；但"看两个人准备"又留出余地。如果你们真没计划好，别轻易给时间。'}
+                      ]}
+                ]},
+                { name:'未来成长', desc:'好的伴侣是彼此成就，不是互相消耗。', questions:[
+                    { scene:'他正经历事业低谷/创业受挫，情绪和状态都很差。',
+                      q:'你会怎么选？',
+                      options:[
+                        {text:'嫌弃他没本事，开始动摇要不要继续', correct:1, delta:-15,
+                         explain:'锦上添花易，雪中送炭难。低谷时离开，是感情最深的背叛。'},
+                        {text:'陪他一起扛，相信他、鼓励他东山再起', correct:3, delta:15,
+                         explain:'教科书。低谷时的不离不弃，是感情最深的勋章。他会记你一辈子。'},
+                        {text:'嘴上不说，行为上开始冷淡疏远', correct:1, delta:-12,
+                         explain:'行为上的嫌弃比言语更伤人。他低谷时最敏感，什么都感觉得到。'},
+                        {text:'默默陪伴但不说话，等他自己走出来', correct:2, delta:4,
+                         explain:'你在，可缺少一点"主动的温暖"。一句鼓励，比无声的陪伴更有力量。'},
+                        {text:'给他一些建议，帮他分析问题', correct:2, delta:2,
+                         explain:'你的理性是好的，但男人低谷时不想要"军师"。他需要的是「相信他的人」，不是「帮他做规划的人」。'}
+                      ]},
+                    { scene:'你最近升职加薪，收入逐渐超过了他。',
+                      q:'你会怎么对待？',
+                      options:[
+                        {text:'到处炫耀，言语间贬低他的收入和能力', correct:1, delta:-15,
+                         explain:'踩着伴侣找优越感，是最伤人的。男人的自尊心一旦碎了很难修复。'},
+                        {text:'照顾他的感受，依然真诚地欣赏和崇拜他', correct:3, delta:13,
+                         explain:'教科书。好的伴侣是彼此成就，你的优秀不该成为他的压力。'},
+                        {text:'开始嫌弃他不上进，频繁拿来比较', correct:1, delta:-11,
+                         explain:'比较和嫌弃会磨灭感情。比起赚钱能力，他更需要你的认可。'},
+                        {text:'主动分担更多开销，但从不提"我赚得多"', correct:2, delta:6,
+                         explain:'你的体贴是好的，可"默默付出"他未必感觉得到。'},
+                        {text:'"咱们经济上可以更独立了"——理性规划家庭财务', correct:2, delta:2,
+                         explain:'理性没错，可这种话会被他听成"我要分你的钱"。敏感的时机上要谨慎。'}
+                      ]},
+                    { scene:'你们对未来规划有了分歧（比如去哪个城市、何时结婚）。',
+                      q:'你会怎么处理？',
+                      options:[
+                        {text:'一定要他听你的，否则就是不爱', correct:1, delta:-11,
+                         explain:'两个人是合伙人，不是对手。强迫只会让他口服心不服。'},
+                        {text:'平等沟通彼此的顾虑，一起寻找双赢的方案', correct:3, delta:13,
+                         explain:'教科书。用谈判代替对抗，把"你vs我"变成"我们vs问题"。'},
+                        {text:'赌气撂狠话："那干脆分手好了"——拿分手威胁', correct:1, delta:-14,
+                         explain:'把分手当武器，是最危险的赌注。说多了，有一天会成真。'},
+                        {text:'冷战几天，等他来妥协', correct:1, delta:-6,
+                         explain:'你把决定权给了他，但冷战的代价是感情消耗。他妥协了，心里也有了刺。'},
+                        {text:'先让步，嘴上说"听你的"——心里憋着', correct:2, delta:1,
+                         explain:'你避免了当下的冲突，可憋着的委屈会变成下一次争吵的炸药包。'}
+                      ]},
+                    { scene:'你们在一起三年了，他突然说："我想去别的城市工作一两年。"',
+                      q:'你会怎么回应？',
+                      options:[
+                        {text:'"你是不是不爱我了，要离开我"——立刻情绪化', correct:1, delta:-10,
+                         explain:'他的"想去别的城市"是事业选择，不等于不要你。把工作和感情绑在一起，会让他压力巨大。'},
+                        {text:'认真听他说原因，再告诉他你的感受和顾虑', correct:3, delta:13,
+                         explain:'教科书。先听后表达 = 不被情绪绑架，也不压抑自己的需要。异地不是不行，关键看两个人怎么处理。'},
+                        {text:'"你去吧，我在这等你"——立刻答应', correct:1, delta:-5,
+                         explain:'你很伟大，但委屈自己 = 长期会失衡。答应前要谈清"我们怎么维持"、"多久回一次"、"什么时候是尽头"。'},
+                        {text:'"不可能，你别想了"——直接拒绝', correct:1, delta:-9,
+                         explain:'直接拒绝 = 不给他选择的空间，也剥夺了你表达"我可以接受但要怎么做"的机会。'},
+                        {text:'"如果去，能半年回来一次吗？不然异地我撑不住"——谈条件', correct:2, delta:6,
+                         explain:'你的诉求是真实的，但直接谈条件可能让他觉得被要挟。先表达感受，再谈条件会更好。'}
+                      ]}
+                ]}
+            ]
+        };
+
+        /* 双人默契题：中性，无对错 */
+        const DUO = [
+            { scene:'周末两个人都很闲，一整天都可以待在一起。',
+              q:'你最理想的相处方式是？',
+              options:['各自充电，做自己的事，偶尔搭话','一起窝沙发上看部电影或综艺','出门探店、逛街、吃顿好的'] },
+            { scene:'你们刚因为一件小事吵完，气氛有点僵。',
+              q:'你希望事情怎么收尾？',
+              options:['主动开口道歉或破冰，不想僵着','先各自冷静，情绪过了再聊','用幽默或撒娇化解，谁也别较真'] },
+            { scene:'对方最近状态很差，情绪低落。',
+              q:'你会怎么做？',
+              options:['安静陪着，不追问','主动帮 TA 分析原因、想办法','给 TA 空间，等 TA 准备好再聊'] },
+            { scene:'你们聊起未来的打算（定居、结婚等）。',
+              q:'你更倾向的状态是？',
+              options:['顺其自然，到时再说','心里大致有想法，但没细聊','认真聊过，有大致共识和时间表'] },
+            { scene:'关于手机和隐私。',
+              q:'你心里真实的边界是？',
+              options:['随时可以看，没什么好藏的','想看可以，但要先说一声','各自保留隐私，互不干涉'] }
+        ];
+
+        /* 单人段位：起始 70，可上下浮动；满分封顶约 130+
+   阈值：110+ 王者 / 90-109 黄金 / 60-89 白银 / 1-59 青铜 / ≤0 失败 */
+        function getRank(hp) {
+            if (hp <= 0) return { cls:'rank-fail', rank:'挑战失败', sub:'爱情值归零', msg:'别灰心。爱情这门课，没有人天生满分。复盘一下刚才的选项，你会发现很多「踩雷」其实都藏在细节里。调整心态，重新出发——真正的高手，都是一次次闯关练出来的。' };
+            if (hp >= 110) return { cls:'rank-king', rank:'王者CP', sub:'神仙眷侣', msg:'你就是教科书级的满分恋人。高情商、懂经营、会疼人，跟你在一起的人一定很幸福。继续保持——你已经掌握了爱情的通关秘籍。' };
+            if (hp >= 90) return { cls:'rank-gold', rank:'黄金伴侣', sub:'满分恋人', msg:'你已经很懂如何经营感情了，大部分时候都能给到对方最需要的东西。稍微打磨几个细节，你就是妥妥的王者段位。' };
+            if (hp >= 60) return { cls:'rank-silver', rank:'白银情侣', sub:'潜力股', msg:'你的感情基础不错，是个值得珍惜的恋人。不过有些细节还可以更用心——多站在对方角度想想，爱情值会蹭蹭上涨。' };
+            return { cls:'rank-bronze', rank:'青铜恋人', sub:'恋爱新手', msg:'路漫漫其修远兮。爱情这门课你还需要多上点心。别灰心，每个人都是边爱边学的，多反思、多用心，下次一定更好。' };
+        }
+
+        /* 双人默契评级 */
+        function getMatchRank(match, total) {
+            const pct = Math.round(match / total * 100);
+            if (pct >= 80) return { rank:`默契 ${pct}%`, sub:'心有灵犀', msg:'你们对彼此的理解超出预期——在很多事上，你们的想法天然一致。这种默契不是巧合，是日常里无数个用心时刻累积出来的。好好珍惜。' };
+            if (pct >= 60) return { rank:`默契 ${pct}%`, sub:'心意相通', msg:'你们有相当不错的默契，大部分时候能想到一起。剩下那些不同的地方，与其说是分歧，不如说是聊天的契机。' };
+            if (pct >= 40) return { rank:`默契 ${pct}%`, sub:'渐入佳境', msg:'你们的默契还在培养中。不同不等于不好——很多恩爱的情侣，想法也常常不一样。关键是愿意坐下来，听听对方为什么这么想。' };
+            return { rank:`默契 ${pct}%`, sub:'需要多聊聊', msg:'这次默契度不高，但这恰恰是好事——它给你们列了一份「待聊清单」。别急着评判，带着好奇去了解 TA 的世界，你们会越来越懂彼此。' };
+        }
+
+        /* ============ 状态 ============ */
+        const START_HP = 70, MAX_HP = 100;
+        let mode = null;       // 'solo' | 'duo'
+        let role = null;       // 'boy' | 'girl'
+        let curLv = 0, curQ = 0;
+        let hp = START_HP, rightCount = 0, answered = false;
+
+        /* 双人状态 */
+        let duoIndex = 0;
+        let myDuoAnswers = [];     // 我选的索引数组
+        let partnerDuoAnswers = null;  // TA 选的（来自链接）
+        let isPairResponder = false;   // 我是第二个答题的人（TA 已答完）
+
+        /* ============ 屏幕切换 ============ */
+        function showScreen(name) {
+            ['home','role','game','result','duo-intro','duo-game','duo-share','duo-result'].forEach(s => {
+                const el = document.getElementById('screen-' + s);
+                if (el) el.classList.toggle('hidden', s !== name);
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* ============ 模式入口 ============ */
+        function goMode(m) {
+            mode = m;
+            if (m === 'solo') {
+                // 重置身份选择
+                document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
+                role = null;
+                showScreen('role');
+            } else if (m === 'duo') {
+                startDuoFlow();
+            }
+        }
+
+        /* 直接从入口页带 mode 进入：跳过首页选择模式 */
+        function bootFromUrl() {
+            const p = new URLSearchParams(location.search);
+            const m = p.get('mode');
+            if (m === 'solo' || m === 'duo') {
+                mode = m;
+                // 隐藏首页，避免一闪而过的双选项
+                document.getElementById('screen-home').classList.add('hidden');
+                if (m === 'solo') {
+                    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
+                    role = null;
+                    showScreen('role');
+                } else {
+                    startDuoFlow();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        function pickRole(r) {
+            role = r;
+            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
+            document.querySelector(`.role-btn[data-role="${r}"]`).classList.add('selected');
+            // 直接开始
+            setTimeout(startSolo, 220);
+        }
+
+        /* ============ 单人游戏 ============ */
+        function startSolo() {
+            curLv = 0; curQ = 0; hp = START_HP; rightCount = 0;
+            showScreen('game');
+            updateHp(); renderLvProgress();
+            showLvIntro();
+        }
+
+        function showLvIntro() {
+            const lv = SOLO[role][curLv];
+            const romans = ['I','II','III','IV','V'];
+            document.getElementById('liNo').textContent = `Chapter ${romans[curLv]}`;
+            document.getElementById('liTitle').textContent = lv.name;
+            document.getElementById('liDesc').textContent = lv.desc;
+            document.getElementById('lvlIntro').classList.remove('hidden');
+            document.getElementById('qWrap').style.display = 'none';
+            setTimeout(() => {
+                document.getElementById('lvlIntro').classList.add('hidden');
+                document.getElementById('qWrap').style.display = 'block';
+                renderQuestion();
+            }, 2000);
+        }
+
+        function renderQuestion() {
+            answered = false;
+            const lv = SOLO[role][curLv];
+            const q = lv.questions[curQ];
+            const romans = ['I','II','III','IV','V'];
+
+            document.getElementById('tbLvNo').textContent = String(curLv + 1).padStart(2, '0');
+            document.getElementById('tbLvName').textContent = lv.name;
+            document.getElementById('qScene').textContent = q.scene;
+            document.getElementById('qText').textContent = q.q;
+
+            const box = document.getElementById('options');
+            box.innerHTML = '';
+            const marks = ['A','B','C','D','E'];
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option';
+                btn.innerHTML = `<span class="opt-mark">${marks[i]}</span><span class="opt-text">${opt.text}</span><span class="opt-delta"></span>`;
+                btn.onclick = () => selectOption(i);
+                box.appendChild(btn);
+            });
+
+            const fb = document.getElementById('feedback');
+            fb.classList.remove('show', 'good', 'bad');
+            document.getElementById('nextBtn').classList.remove('show');
+        }
+
+        function selectOption(idx) {
+            if (answered) return;
+            answered = true;
+            const q = SOLO[role][curLv].questions[curQ];
+            const opt = q.options[idx];
+            const btns = document.querySelectorAll('#options .option');
+            btns.forEach((b, i) => {
+                b.disabled = true;
+                // 标记我选的
+                if (i === idx) b.classList.add('mine');
+                // 三档颜色：3=教科书 / 2=还行 / 1=踩雷
+                const lvl = q.options[i].correct;
+                b.classList.add('lvl-' + lvl);
+                // delta 数值显示
+                const d = q.options[i].delta;
+                const dEl = b.querySelector('.opt-delta');
+                dEl.textContent = (d >= 0 ? '+' : '') + d;
+                // 我选的如果是 1 档（踩雷），加抖动
+                if (i === idx && lvl < 2) {
+                    setTimeout(() => b.classList.add('shake'), 50);
+                }
+            });
+
+            // 只设下限 0，不再封顶 100——让血量按选择上下浮动，凸显每个选项的真实影响
+            hp = Math.max(0, hp + opt.delta);
+            if (opt.correct >= 3) rightCount++;
+            updateHp();
+
+            const fb = document.getElementById('feedback');
+            fb.classList.add('show', opt.correct >= 3 ? 'good' : 'bad');
+            document.getElementById('fbTag').textContent = opt.correct >= 3 ? '✓ 教科书操作' : (opt.correct === 2 ? '◐ 还行，但可以更好' : '✗ 这一波踩雷了');
+            document.getElementById('fbBody').textContent = opt.explain;
+
+            const nb = document.getElementById('nextBtn');
+            nb.classList.add('show');
+            if (hp <= 0) nb.textContent = '查看结果 →';
+            else if (curLv === 4 && curQ === 3) nb.textContent = '查看段位 →';
+            else nb.textContent = '继续 →';
+        }
+
+        function nextQuestion() {
+            if (hp <= 0) return showSoloResult();
+            curQ++;
+            if (curQ >= 4) {  // 每关 4 题
+                curLv++; curQ = 0; renderLvProgress();
+                if (curLv >= 5) return showSoloResult();
+                showLvIntro();
+            } else {
+                renderQuestion();
+            }
+        }
+
+        function updateHp() {
+            const display = Math.max(0, hp);  // 显示：永远不小于 0（上限不封）
+            document.getElementById('tbHp').textContent = display;
+            const fill = document.getElementById('hpFill');
+            // 血条宽度按实际数值比例映射，最大占满条宽 100%；血量超过 100 时仍满条
+            const widthPct = Math.max(0, Math.min(100, hp));
+            fill.style.width = widthPct + '%';
+            fill.classList.toggle('warn', hp <= 40 && hp > 20);
+            fill.classList.toggle('danger', hp > 0 && hp <= 20);
+            fill.classList.toggle('over', hp > 100);  // 超过 100 时，金色满条提示「封顶恋神」
+            document.querySelector('.topbar-hp .hp-max').textContent = ' / ' + (hp > 100 ? hp : 100);
+        }
+
+        function renderLvProgress() {
+            const box = document.getElementById('lvProgress');
+            box.innerHTML = '';
+            for (let i = 0; i < 5; i++) {
+                const d = document.createElement('div');
+                d.className = 'lp-dot' + (i < curLv ? ' done' : (i === curLv ? ' active' : ''));
+                box.appendChild(d);
+            }
+        }
+
+        function showSoloResult() {
+            showScreen('result');
+            const r = getRank(hp);
+            const rankEl = document.getElementById('rRank');
+            rankEl.textContent = r.rank;
+            rankEl.className = 'result-rank ' + r.cls;
+            document.getElementById('rSub').textContent = r.sub;
+            document.getElementById('rMsg').textContent = r.msg;
+            document.getElementById('sHp').textContent = hp;
+            document.getElementById('sRight').textContent = rightCount;
+            document.getElementById('sAcc').textContent = Math.round(rightCount / 20 * 100) + '%';
+            document.getElementById('rEyebrow').textContent = hp <= 0 ? 'Try Again' : 'Your Rank';
+
+            // 店主小建议（结算）
+            const shopkeeper = hp <= 0
+                ? '把这次失败当成一次「体检报告」——它告诉你哪里还可以更好。别自我否定，成长型恋人最迷人。'
+                : '把这个结果截图发给 TA，开个话题聊聊——比吵架时的千万句都有用。记住：段位不是用来比的，是用来一起进步的。';
+            document.getElementById('rShopkeeper').textContent = shopkeeper;
+        }
+
+        function restartSolo() { startSolo(); }
+
+        /* ===================================================================
+           双人模式
+           流程：开始 → 答题 → 分享链接（或直接看结果）
+           链接格式：#duo&a=BCABC  （我的答案）
+           第二人打开带答案的链接后，答完即出双方对比
+        =================================================================== */
+        function startDuoFlow() {
+            // 检查 URL 是否携带对方的答案
+            const partner = readDuoParam();
+            if (partner && partner.length === 5) {
+                // 我是第二位答题者
+                partnerDuoAnswers = partner;
+                isPairResponder = true;
+                showScreen('duo-intro');
+                document.querySelector('#screen-duo-intro h2').textContent = 'TA 已经答完，该你了';
+                document.querySelector('#screen-duo-intro p').innerHTML = '你的 TA 已经完成了默契测试。<b>现在轮到你</b>——同样 5 道题，凭第一直觉作答。答完后，你们俩会立刻看到默契度结果。';
+            } else {
+                partnerDuoAnswers = null;
+                isPairResponder = false;
+                showScreen('duo-intro');
+                document.querySelector('#screen-duo-intro h2').textContent = '双人默契';
+                document.querySelector('#screen-duo-intro p').innerHTML = '你和 TA 将分别独立作答 <b>5 道题</b>。系统会对比你们的答案，算出「默契度」。答题时请凭第一直觉——这才是真实的你们。';
+            }
+        }
+
+        function startDuo() {
+            duoIndex = 0;
+            myDuoAnswers = [];
+            showScreen('duo-game');
+            renderDuoProgress();
+            renderDuoQuestion();
+        }
+
+        function renderDuoQuestion() {
+            const q = DUO[duoIndex];
+            document.getElementById('dLvNo').textContent = String(duoIndex + 1).padStart(2, '0');
+            document.getElementById('dRole').textContent = isPairResponder ? '你的回合' : '我的回合';
+            document.getElementById('dScene').textContent = q.scene;
+            document.getElementById('dText').textContent = q.q;
+
+            const box = document.getElementById('dOptions');
+            box.innerHTML = '';
+            const marks = ['A','B','C'];
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option';
+                btn.innerHTML = `<span class="opt-mark">${marks[i]}</span><span class="opt-text">${opt}</span>`;
+                btn.onclick = () => selectDuo(i);
+                box.appendChild(btn);
+            });
+            document.getElementById('dNextBtn').classList.remove('show');
+        }
+
+        function selectDuo(idx) {
+            // 双人模式：单选即锁定，自动进入下一题
+            myDuoAnswers.push(idx);
+            const btns = document.querySelectorAll('#dOptions .option');
+            btns.forEach((b, i) => {
+                b.disabled = true;
+                if (i === idx) b.classList.add('correct'); // 高亮我的选择
+            });
+            const nb = document.getElementById('dNextBtn');
+            nb.classList.add('show');
+            nb.textContent = duoIndex === 4 ? (isPairResponder ? '查看默契度 →' : '完成，生成链接 →') : '继续 →';
+        }
+
+        function nextDuo() {
+            if (duoIndex < 4) {
+                duoIndex++;
+                renderDuoProgress();
+                renderDuoQuestion();
+            } else {
+                // 答完 5 题
+                if (isPairResponder && partnerDuoAnswers) {
+                    showDuoResult();
+                } else {
+                    showDuoShare();
+                }
+            }
+        }
+
+        function renderDuoProgress() {
+            const box = document.getElementById('dProgress');
+            box.innerHTML = '';
+            for (let i = 0; i < 5; i++) {
+                const d = document.createElement('div');
+                d.className = 'lp-dot' + (i < duoIndex ? ' done' : (i === duoIndex ? ' active' : ''));
+                box.appendChild(d);
+            }
+        }
+
+        /* 生成分享链接 */
+        function buildDuoUrl(answers) {
+            const letters = answers.map(i => 'ABC'[i]).join('');
+            const base = location.href.split('#')[0];
+            return base + '#duo&a=' + letters;
+        }
+
+        function showDuoShare() {
+            showScreen('duo-share');
+            const url = buildDuoUrl(myDuoAnswers);
+            document.getElementById('shareCode').textContent = url;
+            document.getElementById('shareCode').dataset.url = url;
+        }
+
+        function copyShareLink() {
+            const url = document.getElementById('shareCode').dataset.url;
+            const fallback = () => {
+                const ta = document.createElement('textarea');
+                ta.value = url; document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand('copy'); } catch(e) {}
+                document.body.removeChild(ta);
+            };
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).catch(fallback);
+            } else { fallback(); }
+            const fb = document.getElementById('copyFb');
+            fb.classList.add('show');
+            setTimeout(() => fb.classList.remove('show'), 3500);
+        }
+
+        /* 从 URL 读取对方答案 */
+        function readDuoParam() {
+            const hash = location.hash || '';
+            const m = hash.match(/#duo&a=([ABC]{5})/);
+            return m ? m[1].split('').map(c => 'ABC'.indexOf(c)) : null;
+        }
+
+        /* 双人结果 */
+        function showDuoResult() {
+            showScreen('duo-result');
+            let match = 0;
+            const detail = [];
+            for (let i = 0; i < 5; i++) {
+                const mine = myDuoAnswers[i];
+                const theirs = partnerDuoAnswers[i];
+                const same = mine === theirs;
+                if (same) match++;
+                detail.push({
+                    scene: DUO[i].q,
+                    mine: DUO[i].options[mine],
+                    theirs: DUO[i].options[theirs],
+                    same
+                });
+            }
+            const r = getMatchRank(match, 5);
+            document.getElementById('mRank').textContent = r.rank;
+            document.getElementById('mSub').textContent = r.sub;
+            document.getElementById('mMsg').textContent = r.msg;
+            document.getElementById('mMatch').textContent = match;
+            document.getElementById('mTotal').textContent = 5;
+            document.getElementById('mPct').textContent = Math.round(match / 5 * 100) + '%';
+
+            const box = document.getElementById('matchDetail');
+            box.innerHTML = '';
+            detail.forEach((d, i) => {
+                const row = document.createElement('div');
+                row.className = 'match-item';
+                row.innerHTML = `
+                    <span class="match-icon ${d.same ? 'yes' : 'no'}">${d.same ? '✓' : '·'}</span>
+                    <span class="match-text">
+                        <div style="color:var(--ink);font-weight:500;margin-bottom:4px;">第${i+1}题 · ${d.scene}</div>
+                        <div>你：<span class="match-pick">${d.mine}</span></div>
+                        <div>TA：<span class="match-pick">${d.theirs}</span></div>
+                    </span>`;
+                box.appendChild(row);
+            });
+
+            document.getElementById('mShopkeeper').textContent =
+                match >= 4 ? '默契度高，别骄傲——记得感谢 TA 平时的用心。'
+                : '挑一道你们答案不同的题，今晚就认真聊聊。不同不可怕，可怕的是不愿了解。';
+        }
+
+        function restartDuo() {
+            // 清理 hash，回到双人介绍
+            history.replaceState(null, '', location.pathname);
+            partnerDuoAnswers = null;
+            isPairResponder = false;
+            startDuoFlow();
+        }
+
+        /* ============ PWA：注册 Service Worker ============ */
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            });
+        }
+
+        /* ============ 初始化：检查是否从链接进入 ============ */
+        (function init() {
+            // 优先：URL 里带 mode 参数（从入口页直接进）
+            if (bootFromUrl()) return;
+            // 次之：双人链接（#duo&a=...）
+            if (readDuoParam()) {
+                mode = 'duo';
+                startDuoFlow();
+            }
+        })();
+    </script>
+</body>
+</html>

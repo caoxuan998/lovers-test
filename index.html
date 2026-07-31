@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>做满分恋人 · 爱情血条闯关</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="description" content="做满分恋人 · 5关20题爱情血条闯关，看你能撑到几段位">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="满分恋人">
+    <link rel="apple-touch-icon" href="icon-192.svg">
+    <link rel="icon" type="image/svg+xml" href="icon-192.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #fafaf7;
+            --paper: #ffffff;
+            --ink: #1a1a1a;
+            --ink-soft: #6b6b6b;
+            --ink-faint: #a8a8a8;
+            --line: #e8e6df;
+            --line-strong: #d4d2ca;
+            --accent-bg: #f4f2ec;
+            --gold: #b8956a;
+            --sans: 'Noto Sans SC', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            --serif: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+        }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+            padding: 0 0 60px;
+            line-height: 1.75;
+            -webkit-font-smoothing: antialiased;
+            letter-spacing: 0.02em;
+            padding-top: max(20px, env(safe-area-inset-top));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wrap { max-width: 520px; width: 100%; padding: 0 28px; }
+
+        /* ===== Brand ===== */
+        .brand {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+        .brand-mark {
+            display: inline-block;
+            font-family: var(--serif);
+            font-style: italic;
+            font-size: 0.78em;
+            letter-spacing: 0.45em;
+            color: var(--ink-faint);
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--line-strong);
+            padding-left: 0.45em;
+        }
+
+        /* ===== Hero ===== */
+        .hero { text-align: center; margin-bottom: 48px; }
+        .hero .eyebrow {
+            font-size: 0.7rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            font-weight: 500;
+            display: block;
+            margin-bottom: 22px;
+        }
+        .hero h1 {
+            font-family: var(--serif);
+            font-size: 2.6rem;
+            font-weight: 600;
+            line-height: 1.15;
+            letter-spacing: 0.08em;
+            margin-bottom: 18px;
+        }
+        .hero .lede {
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+            max-width: 320px;
+            margin: 0 auto;
+            line-height: 1.85;
+        }
+        .hero .divider {
+            width: 32px; height: 1px;
+            background: var(--line-strong);
+            margin: 28px auto;
+        }
+
+        /* ===== Mode Cards ===== */
+        .modes { margin-bottom: 32px; }
+        .mode-card {
+            display: block;
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 2px;
+            padding: 28px 26px;
+            margin-bottom: 14px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(.22,.61,.36,1);
+            text-align: left;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+        }
+        .mode-card::after {
+            content: '→';
+            position: absolute;
+            right: 26px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--ink-faint);
+            font-size: 1.1rem;
+            transition: all 0.4s;
+        }
+        .mode-card:hover, .mode-card:active {
+            border-color: var(--ink);
+            background: var(--ink);
+            color: var(--bg);
+        }
+        .mode-card:hover::after, .mode-card:active::after {
+            color: var(--bg);
+            transform: translateY(-50%) translateX(6px);
+        }
+        .mode-card .mode-num {
+            font-family: var(--serif);
+            font-size: 0.75rem;
+            font-style: italic;
+            opacity: 0.5;
+            margin-bottom: 10px;
+            letter-spacing: 0.1em;
+        }
+        .mode-card .mode-title {
+            font-family: var(--serif);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.06em;
+        }
+        .mode-card .mode-desc {
+            font-size: 0.82rem;
+            opacity: 0.65;
+            line-height: 1.7;
+        }
+
+        /* ===== 店主小建议 ===== */
+        .shopkeeper {
+            background: var(--accent-bg);
+            border-left: 2px solid var(--ink);
+            padding: 22px 24px;
+            margin-bottom: 28px;
+        }
+        .shopkeeper .sk-label {
+            font-size: 0.68rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .shopkeeper .sk-label::before {
+            content: '✦';
+            color: var(--gold);
+        }
+        .shopkeeper .sk-body {
+            font-size: 0.83rem;
+            color: var(--ink-soft);
+            line-height: 1.85;
+        }
+
+        /* ===== Footer ===== */
+        .foot {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid var(--line);
+        }
+        .foot p {
+            font-size: 0.72rem;
+            color: var(--ink-faint);
+            line-height: 1.9;
+            letter-spacing: 0.05em;
+        }
+
+        /* ===== Install hint (PWA) ===== */
+        .install-hint {
+            display: none;
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 90%;
+            background: var(--ink);
+            color: var(--bg);
+            padding: 12px 20px;
+            border-radius: 24px;
+            font-size: 0.78rem;
+            letter-spacing: 0.05em;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+            z-index: 100;
+            animation: slideUp 0.4s ease;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translate(-50%, 20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        .install-hint.show { display: block; }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 2.1rem; }
+            .mode-card { padding: 24px 22px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="brand">
+            <span class="brand-mark">Lovers' Quest</span>
+        </div>
+
+        <div class="hero">
+            <span class="eyebrow">A Lovers' Quest · 2026</span>
+            <h1>做满分恋人</h1>
+            <div class="divider"></div>
+            <p class="lede">五道关卡，二十个真实情境。<br>用十分钟，看见爱情里那些<br>容易被忽略的细节。</p>
+        </div>
+
+        <div class="modes">
+            <a class="mode-card" href="lovers-test.html?mode=solo">
+                <div class="mode-num">Mode 01</div>
+                <div class="mode-title">单人闯关</div>
+                <div class="mode-desc">爱情血条挑战 · 看你能撑到几段位</div>
+            </a>
+            <a class="mode-card" href="lovers-test.html?mode=duo">
+                <div class="mode-num">Mode 02</div>
+                <div class="mode-title">双人默契</div>
+                <div class="mode-desc">和 TA 各答五题 · 测你们有多懂彼此</div>
+            </a>
+        </div>
+
+        <div class="shopkeeper">
+            <div class="sk-label">店主小建议</div>
+            <div class="sk-body">这不是一场考试，没有绝对的标准答案。每道题更像一面镜子——照见我们平时没说出口的想法。建议拉上 TA 一起玩，结果不重要，重要的是玩完之后，你们愿意坐下来聊一聊。真正的满分，从来不是答出来的，是两个人一起过出来的。</div>
+        </div>
+
+        <div class="foot">
+            <p>可添加至桌面，像 App 一样随时开玩<br>· 本作品仅供娱乐与启发 ·</p>
+        </div>
+    </div>
+
+    <!-- 桌面安装提示（延迟 3 秒显示，仅一次） -->
+    <div class="install-hint" id="installHint">
+        💡 Safari 分享 → 添加到主屏幕，像 App 一样随时开玩
+    </div>
+
+    <script>
+        /* 显示安装引导（iOS 友好，安卓浏览器会自己弹安装提示） */
+        (function () {
+            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                              || window.navigator.standalone === true;
+            if (!isIOS || isStandalone) return;
+            // 已看过就不显示
+            if (localStorage.getItem('install-hint-shown')) return;
+            setTimeout(() => {
+                document.getElementById('installHint').classList.add('show');
+                localStorage.setItem('install-hint-shown', '1');
+                setTimeout(() => {
+                    document.getElementById('installHint').classList.remove('show');
+                }, 8000);
+            }, 3500);
+        })();
+
+        /* 注册 Service Worker */
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            });
+        }
+    </script>
+</body>
+</html>
